@@ -1,0 +1,15 @@
+version: '3'
+services:
+    web:
+        container_name: web_apache
+        build:
+            context: .
+        tty: true
+        environment:
+            HTTPD_a2enmod: 'perl'
+            
+        volumes:
+            - ./html:/usr/local/apache2/htdocs/
+            - ./log:/var/log/apache2
+        ports:
+            - "8080:80"
