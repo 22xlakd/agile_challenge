@@ -1,4 +1,4 @@
-package ImageService;
+package CustomMojolicious::ImageService;
 
 use LWP::UserAgent;
 use JSON::XS;
@@ -58,7 +58,6 @@ sub get_all_images {
     if($args{load_extend}){
         foreach my $img (@{$images->{pictures}}){
             my $image_detail = $self->get_single_image(id => $img->{id});
-            next unless $image_detail;
 
             foreach my $k (keys %{$image_detail}){
                 $img->{$k} = $image_detail->{$k};
@@ -81,11 +80,6 @@ sub get_images {
 
     my $init_value = ($page - 1) * ITEMS_PER_PAGE;
     my $final_value = $init_value + ITEMS_PER_PAGE - 1;
-
-    if($page > 4){
-        return { pictures => 'not found'};
-    }
-
     my @pictures;
     for ($init_value..$final_value){
         push @pictures, @{$args{images}->{pictures}}[$_];
@@ -100,13 +94,11 @@ sub get_single_image {
 
     return {} unless $args{id};
 
-    my $json_response = $self->_execute(
+    return $self->_execute(
         endpoint    => 'http://interview.agileengine.com',
         method      => 'GET',
         path        => '/images/'.$args{id}
     );
-
-    return $json_response;
 }
 
 sub search_images {
